@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: spring-boot-app
-          image: hmurafique93/spring-boot-app:1
+          image: hmurafique93/spring-boot-app:3
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
