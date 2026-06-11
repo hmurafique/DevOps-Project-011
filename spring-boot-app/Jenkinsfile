@@ -1,9 +1,9 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.16-eclipse-temurin-21'
-            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-        }
+    agent any
+
+    tools {
+        maven 'Maven3'
+        jdk 'JDK21'
     }
 
     environment {
@@ -78,6 +78,7 @@ pipeline {
                     usernameVariable: 'GIT_USER',
                     passwordVariable: 'GIT_PASS')]) {
                     sh '''
+                        rm -rf /tmp/repo
                         git clone https://${GIT_USER}:${GIT_PASS}@github.com/hmurafique/DevOps-Project-011 /tmp/repo
                         cd /tmp/repo/spring-boot-app-manifests
                         sed -i "s|hmurafique93/spring-boot-app:.*|hmurafique93/spring-boot-app:${BUILD_NUMBER}|g" deployment.yml
