@@ -1,5 +1,5 @@
 # DevOps-Project-011 
-# CI/CD Pipeline for Spring Boot Application using Jenkins, SonarQube, Docker, ArgoCD & Kubernetes
+# CI/CD Pipeline for Spring Boot Application using Jenkins, SonarQube, Docker, ArgoCD, Kubernetes & Helm
 
 ![Java](https://img.shields.io/badge/Java-21-007396?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
