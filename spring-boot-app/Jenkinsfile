@@ -1,0 +1,103 @@
+pipeline {
+    agent {
+        docker {
+            image 'maven:3.9.16-eclipse-temurin-21'
+            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+
+    environment {
+        DOCKER_IMAGE = "hmurafique93/spring-boot-app:${BUILD_NUMBER}"
+        SONAR_URL = "http://3.92.26.20:9000"
+        GIT_REPO = "https://github.com/hmurafique/DevOps-Project-011"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'github-token',
+                    url: "${GIT_REPO}"
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('spring-boot-app') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('spring-boot-app') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube-Server') {
+                    dir('spring-boot-app') {
+                        sh 'mvn sonar:sonar'
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('spring-boot-app') {
+                    sh 'docker build -t ${DOCKER_IMAGE} .'
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-token',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push ${DOCKER_IMAGE}
+                        docker tag ${DOCKER_IMAGE} hmurafique93/spring-boot-app:latest
+                        docker push hmurafique93/spring-boot-app:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Update K8s Manifests') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'github-token',
+                    usernameVariable: 'GIT_USER',
+                    passwordVariable: 'GIT_PASS')]) {
+                    sh '''
+                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/hmurafique/DevOps-Project-011 /tmp/repo
+                        cd /tmp/repo/spring-boot-app-manifests
+                        sed -i "s|hmurafique93/spring-boot-app:.*|hmurafique93/spring-boot-app:${BUILD_NUMBER}|g" deployment.yml
+                        git config user.email "ci@jenkins.com"
+                        git config user.name "Jenkins"
+                        git add .
+                        git commit -m "Update image tag to ${BUILD_NUMBER}"
+                        git push https://${GIT_USER}:${GIT_PASS}@github.com/hmurafique/DevOps-Project-011 main
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
