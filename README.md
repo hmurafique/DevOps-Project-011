@@ -1,4 +1,5 @@
-# DevOps-Project-011: CI/CD Pipeline for Spring Boot App using Jenkins, SonarQube, Docker, ArgoCD & Kubernetes
+# DevOps-Project-011 
+# CI/CD Pipeline for Spring Boot Application using Jenkins, SonarQube, Docker, ArgoCD & Kubernetes
 
 ![Java](https://img.shields.io/badge/Java-21-007396?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
@@ -11,7 +12,7 @@
 ![ArgoCD](https://img.shields.io/badge/ArgoCD-GitOps-EF7B4D?style=for-the-badge&logo=argo&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
-This project implements a complete CI/CD pipeline for a Spring Boot application, integrating code quality analysis, containerization, and GitOps-based deployment to Kubernetes.
+This project implements a complete CI/CD Pipeline for a Spring Boot Application, integrating code quality analysis, containerization, and GitOps-based deployment to Kubernetes.
 
 ## 🏗️ Architecture
 
@@ -129,4 +130,4 @@ Expected output: a welcome HTML page confirming the app was deployed via the CI/
 
 ## ✅ Result
 
-A fully automated GitOps pipeline: every push to `main` triggers a build, test, code quality scan, image build/push, manifest update, and automatic Kubernetes deployment via ArgoCD — with zero manual `kubectl apply`.
+A fully automated GitOps Pipeline: Every push to `main` triggers a build, test, code quality scan, image build/push, manifest update, and automatic Kubernetes deployment via ArgoCD — with zero manual `kubectl apply`.
