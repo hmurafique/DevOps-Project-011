@@ -131,3 +131,43 @@ Expected output: a welcome HTML page confirming the app was deployed via the CI/
 ## ✅ Result
 
 A fully automated GitOps Pipeline: Every push to `main` triggers a build, test, code quality scan, image build/push, manifest update, and automatic Kubernetes deployment via ArgoCD — with zero manual `kubectl apply`.
+
+## 🧹 Cleanup
+ 
+To avoid ongoing AWS charges, clean up resources after the project:
+ 
+### 1. Delete ArgoCD Application
+```bash
+kubectl delete application spring-boot-app -n argocd
+```
+ 
+### 2. Delete Minikube cluster
+```bash
+minikube delete
+```
+ 
+### 3. Uninstall ArgoCD (if not deleting Minikube)
+```bash
+helm uninstall argocd -n argocd
+kubectl delete namespace argocd
+```
+ 
+### 4. Remove SonarQube container (Jenkins-Server)
+```bash
+docker stop sonarqube
+docker rm sonarqube
+```
+ 
+### 5. Delete DockerHub images (optional)
+DockerHub → `hmurafique93/spring-boot-app` → Settings → Delete repository
+ 
+### 6. Terminate EC2 Instances ⚠️ (most important)
+AWS Console → EC2 → Instances → select `Jenkins-Server` and `Kubernetes-Server` → Instance State → **Terminate Instance**
+ 
+### 7. Delete unused Security Groups (optional)
+EC2 → Security Groups → remove groups created for this project
+
+## 👨‍💻 Author
+**Hafiz Muhammad Umar Rafique**
+- GitHub: [@hmurafique](https://github.com/hmurafique)
+- DockerHub: [hmurafique93](https://hub.docker.com/u/hmurafique93)
